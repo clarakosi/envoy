@@ -7,6 +7,7 @@
 
 #include "envoy/config/core/v3/base.pb.h"
 #include "envoy/config/route/v3/route_components.pb.h"
+#include "envoy/extensions/filters/http/ratelimit/v3/rate_limit.pb.h"
 
 #include "common/common/assert.h"
 #include "common/common/empty_string.h"
@@ -101,11 +102,6 @@ bool GenericKeyAction::populateDescriptor(const Router::RouteEntry&,
   return true;
 }
 
-DynamicMetaDataAction::DynamicMetaDataAction(
-    const envoy::config::route::v3::RateLimit::Action::DynamicMetaData& action)
-    : metadata_key_(action.metadata_key()), descriptor_key_(action.descriptor_key()),
-      default_value_(action.default_value()) {}
-
 bool DynamicMetaDataAction::populateDescriptor(
     const Router::RouteEntry&, RateLimit::Descriptor& descriptor, const std::string&,
     const Http::HeaderMap&, const Network::Address::Instance&,
@@ -123,12 +119,6 @@ bool DynamicMetaDataAction::populateDescriptor(
 
   return false;
 }
-
-HeaderValueMatchAction::HeaderValueMatchAction(
-    const envoy::config::route::v3::RateLimit::Action::HeaderValueMatch& action)
-    : descriptor_value_(action.descriptor_value()),
-      expect_match_(PROTOBUF_GET_WRAPPED_OR_DEFAULT(action, expect_match, true)),
-      action_headers_(Http::HeaderUtility::buildHeaderDataVector(action.headers())) {}
 
 bool HeaderValueMatchAction::populateDescriptor(const Router::RouteEntry&,
                                                 RateLimit::Descriptor& descriptor,

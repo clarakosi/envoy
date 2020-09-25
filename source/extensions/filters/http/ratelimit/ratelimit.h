@@ -16,9 +16,11 @@
 
 #include "common/common/assert.h"
 #include "common/http/header_map_impl.h"
+#include "common/router/router_ratelimit.h"
 
 #include "extensions/filters/common/ratelimit/ratelimit.h"
 #include "extensions/filters/common/ratelimit/stat_names.h"
+#include "extensions/filters/http/ratelimit/ratelimit_policy_impl.h"
 
 namespace Envoy {
 namespace Extensions {
@@ -101,16 +103,19 @@ class FilterConfigPerRoute : public Router::RouteSpecificFilterConfig {
 public:
   FilterConfigPerRoute(
       const envoy::extensions::filters::http::ratelimit::v3::RateLimitPerRoute& config)
-      : vh_rate_limits_(config.vh_rate_limits()) {}
+      : vh_rate_limits_(config.vh_rate_limits()), rate_limit_policy_(config.rate_limits()) {}
 
   envoy::extensions::filters::http::ratelimit::v3::RateLimitPerRoute::VhRateLimitsOptions
   virtualHostRateLimits() const {
     return vh_rate_limits_;
   }
 
+  const Router::RateLimitPolicy& rateLimitPolicy() const { return rate_limit_policy_; }
+
 private:
   const envoy::extensions::filters::http::ratelimit::v3::RateLimitPerRoute::VhRateLimitsOptions
       vh_rate_limits_;
+  const FilterRateLimitPolicyImpl rate_limit_policy_;
 };
 
 /**
@@ -156,6 +161,11 @@ private:
   void populateResponseHeaders(Http::HeaderMap& response_headers);
   void appendRequestHeaders(Http::HeaderMapPtr& request_headers_to_add);
   VhRateLimitOptions getVirtualHostRateLimitOption(const Router::RouteConstSharedPtr& route);
+  static const Router::RateLimitPolicy&
+  getRouteRateLimitPolicy(const Router::RouteConstSharedPtr& route);
+
+  static const Router::RateLimitPolicy&
+  getVhRateLimitPolicy(const Router::RouteConstSharedPtr& route);
 
   Http::Context& httpContext() { return config_->httpContext(); }
 

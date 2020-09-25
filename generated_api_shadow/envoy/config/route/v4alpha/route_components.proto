@@ -98,7 +98,9 @@ message VirtualHost {
 
   // Specifies a set of rate limit configurations that will be applied to the
   // virtual host.
-  repeated RateLimit rate_limits = 6;
+  //
+  // This field is deprecated. Please use :ref:`rate_limits <envoy_v3_api_field_extensions.filters.http.ratelimit.v3.RateLimitPerRoute.rate_limits>`
+  repeated RateLimit hidden_envoy_deprecated_rate_limits = 6 [deprecated = true];
 
   // Specifies a list of HTTP headers that should be added to each request
   // handled by this virtual host. Headers specified at this level are applied
@@ -999,7 +1001,9 @@ message RouteAction {
 
   // Specifies a set of rate limit configurations that could be applied to the
   // route.
-  repeated RateLimit rate_limits = 13;
+  //
+  // This field is deprecated. Please use :ref:`rate_limits <envoy_v3_api_field_extensions.filters.http.ratelimit.v3.RateLimitPerRoute.rate_limits>`
+  repeated RateLimit hidden_envoy_deprecated_rate_limits = 13 [deprecated = true];
 
   // Specifies if the rate limit filter should include the virtual host rate
   // limits. By default, if the route configured rate limits, the virtual host

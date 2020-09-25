@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-package envoy.extensions.filters.http.ratelimit.v3;
+package envoy.extensions.filters.http.ratelimit.v4alpha;
 
 import "envoy/config/ratelimit/v3/rls.proto";
-import "envoy/config/route/v3/route_components.proto";
+import "envoy/config/route/v4alpha/route_components.proto";
 import "envoy/type/metadata/v3/metadata.proto";
 
 import "google/protobuf/duration.proto";
@@ -13,10 +13,10 @@ import "udpa/annotations/status.proto";
 import "udpa/annotations/versioning.proto";
 import "validate/validate.proto";
 
-option java_package = "io.envoyproxy.envoy.extensions.filters.http.ratelimit.v3";
+option java_package = "io.envoyproxy.envoy.extensions.filters.http.ratelimit.v4alpha";
 option java_outer_classname = "RateLimitProto";
 option java_multiple_files = true;
-option (udpa.annotations.file_status).package_version_status = ACTIVE;
+option (udpa.annotations.file_status).package_version_status = NEXT_MAJOR_VERSION_CANDIDATE;
 
 // [#protodoc-title: Rate limit]
 // Rate limit :ref:`configuration overview <config_http_filters_rate_limit>`.
@@ -25,7 +25,7 @@ option (udpa.annotations.file_status).package_version_status = ACTIVE;
 // [#next-free-field: 9]
 message RateLimit {
   option (udpa.annotations.versioning).previous_message_type =
-      "envoy.config.filter.http.rate_limit.v2.RateLimit";
+      "envoy.extensions.filters.http.ratelimit.v3.RateLimit";
 
   // Defines the version of the standard to use for X-RateLimit headers.
   enum XRateLimitHeadersRFCVersion {
@@ -105,6 +105,9 @@ message RateLimit {
 }
 
 message RateLimitPerRoute {
+  option (udpa.annotations.versioning).previous_message_type =
+      "envoy.extensions.filters.http.ratelimit.v3.RateLimitPerRoute";
+
   enum VhRateLimitsOptions {
     // Use the virtual host rate limits unless the route has a rate limit policy.
     OVERRIDE = 0;
@@ -118,8 +121,14 @@ message RateLimitPerRoute {
 
   // Global rate limiting :ref:`architecture overview <arch_overview_global_rate_limit>`.
   message RateLimit {
+    option (udpa.annotations.versioning).previous_message_type =
+        "envoy.extensions.filters.http.ratelimit.v3.RateLimitPerRoute.RateLimit";
+
     // [#next-free-field: 8]
     message Action {
+      option (udpa.annotations.versioning).previous_message_type =
+          "envoy.extensions.filters.http.ratelimit.v3.RateLimitPerRoute.RateLimit.Action";
+
       // The following descriptor entry is appended to the descriptor:
       //
       // .. code-block:: cpp
@@ -128,6 +137,9 @@ message RateLimitPerRoute {
       //
       // <local service cluster> is derived from the :option:`--service-cluster` option.
       message SourceCluster {
+        option (udpa.annotations.versioning).previous_message_type =
+            "envoy.extensions.filters.http.ratelimit.v3.RateLimitPerRoute.RateLimit.Action."
+            "SourceCluster";
       }
 
       // The following descriptor entry is appended to the descriptor:
@@ -137,16 +149,19 @@ message RateLimitPerRoute {
       //   ("destination_cluster", "<routed target cluster>")
       //
       // Once a request matches against a route table rule, a routed cluster is determined by one of
-      // the following :ref:`route table configuration <envoy_api_msg_config.route.v3.RouteConfiguration>`
+      // the following :ref:`route table configuration <envoy_api_msg_config.route.v4alpha.RouteConfiguration>`
       // settings:
       //
-      // * :ref:`cluster <envoy_api_field_config.route.v3.RouteAction.cluster>` indicates the upstream cluster
+      // * :ref:`cluster <envoy_api_field_config.route.v4alpha.RouteAction.cluster>` indicates the upstream cluster
       //   to route to.
-      // * :ref:`weighted_clusters <envoy_api_field_config.route.v3.RouteAction.weighted_clusters>`
+      // * :ref:`weighted_clusters <envoy_api_field_config.route.v4alpha.RouteAction.weighted_clusters>`
       //   chooses a cluster randomly from a set of clusters with attributed weight.
-      // * :ref:`cluster_header <envoy_api_field_config.route.v3.RouteAction.cluster_header>` indicates which
+      // * :ref:`cluster_header <envoy_api_field_config.route.v4alpha.RouteAction.cluster_header>` indicates which
       //   header in the request contains the target cluster.
       message DestinationCluster {
+        option (udpa.annotations.versioning).previous_message_type =
+            "envoy.extensions.filters.http.ratelimit.v3.RateLimitPerRoute.RateLimit.Action."
+            "DestinationCluster";
       }
 
       // The following descriptor entry is appended when a header contains a key that matches the
@@ -156,6 +171,10 @@ message RateLimitPerRoute {
       //
       //   ("<descriptor_key>", "<header_value_queried_from_header>")
       message RequestHeaders {
+        option (udpa.annotations.versioning).previous_message_type =
+            "envoy.extensions.filters.http.ratelimit.v3.RateLimitPerRoute.RateLimit.Action."
+            "RequestHeaders";
+
         // The header name to be queried from the request headers. The header’s
         // value is used to populate the value of the descriptor entry for the
         // descriptor_key.
@@ -179,6 +198,9 @@ message RateLimitPerRoute {
       //
       //   ("remote_address", "<trusted address from x-forwarded-for>")
       message RemoteAddress {
+        option (udpa.annotations.versioning).previous_message_type =
+            "envoy.extensions.filters.http.ratelimit.v3.RateLimitPerRoute.RateLimit.Action."
+            "RemoteAddress";
       }
 
       // The following descriptor entry is appended to the descriptor:
@@ -187,6 +209,10 @@ message RateLimitPerRoute {
       //
       //   ("generic_key", "<descriptor_value>")
       message GenericKey {
+        option (udpa.annotations.versioning).previous_message_type =
+            "envoy.extensions.filters.http.ratelimit.v3.RateLimitPerRoute.RateLimit.Action."
+            "GenericKey";
+
         // The value to use in the descriptor entry.
         string descriptor_value = 1 [(validate.rules).string = {min_bytes: 1}];
 
@@ -201,6 +227,10 @@ message RateLimitPerRoute {
       //
       //   ("header_match", "<descriptor_value>")
       message HeaderValueMatch {
+        option (udpa.annotations.versioning).previous_message_type =
+            "envoy.extensions.filters.http.ratelimit.v3.RateLimitPerRoute.RateLimit.Action."
+            "HeaderValueMatch";
+
         // The value to use in the descriptor entry.
         string descriptor_value = 1 [(validate.rules).string = {min_bytes: 1}];
 
@@ -215,7 +245,7 @@ message RateLimitPerRoute {
         // specified headers in the config. A match will happen if all the
         // headers in the config are present in the request with the same values
         // (or based on presence if the value field is not in the config).
-        repeated config.route.v3.HeaderMatcher headers = 3
+        repeated config.route.v4alpha.HeaderMatcher headers = 3
             [(validate.rules).repeated = {min_items: 1}];
       }
 
@@ -225,6 +255,10 @@ message RateLimitPerRoute {
       //
       //   ("<descriptor_key>", "<value_queried_from_metadata>")
       message DynamicMetaData {
+        option (udpa.annotations.versioning).previous_message_type =
+            "envoy.extensions.filters.http.ratelimit.v3.RateLimitPerRoute.RateLimit.Action."
+            "DynamicMetaData";
+
         // The key to use in the descriptor entry.
         string descriptor_key = 1 [(validate.rules).string = {min_bytes: 1}];
 
@@ -264,8 +298,15 @@ message RateLimitPerRoute {
     }
 
     message Override {
+      option (udpa.annotations.versioning).previous_message_type =
+          "envoy.extensions.filters.http.ratelimit.v3.RateLimitPerRoute.RateLimit.Override";
+
       // Fetches the override from the dynamic metadata.
       message DynamicMetadata {
+        option (udpa.annotations.versioning).previous_message_type =
+            "envoy.extensions.filters.http.ratelimit.v3.RateLimitPerRoute.RateLimit.Override."
+            "DynamicMetadata";
+
         // Metadata struct that defines the key and path to retrieve the struct value.
         // The value must be a struct containing an integer "requests_per_unit" property
         // and a "unit" property with a value parseable to :ref:`RateLimitUnit

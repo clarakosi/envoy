@@ -53,9 +53,9 @@ message VirtualHost {
     ALL = 2;
   }
 
-  reserved 9, 12;
+  reserved 9, 12, 6;
 
-  reserved "per_filter_config";
+  reserved "per_filter_config", "rate_limits";
 
   // The logical name of the virtual host. This is used when emitting certain
   // statistics but is not relevant for routing.
@@ -95,10 +95,6 @@ message VirtualHost {
   // A list of virtual clusters defined for this virtual host. Virtual clusters
   // are used for additional statistics gathering.
   repeated VirtualCluster virtual_clusters = 5;
-
-  // Specifies a set of rate limit configurations that will be applied to the
-  // virtual host.
-  repeated RateLimit rate_limits = 6;
 
   // Specifies a list of HTTP headers that should be added to each request
   // handled by this virtual host. Headers specified at this level are applied
@@ -788,10 +784,10 @@ message RouteAction {
     google.protobuf.Duration grpc_timeout_offset = 3;
   }
 
-  reserved 12, 18, 19, 16, 22, 21, 10, 14, 26, 31;
+  reserved 12, 18, 19, 16, 22, 21, 10, 13, 14, 26, 31;
 
-  reserved "request_mirror_policy", "include_vh_rate_limits", "internal_redirect_action",
-      "max_internal_redirects";
+  reserved "request_mirror_policy", "rate_limits", "include_vh_rate_limits",
+      "internal_redirect_action", "max_internal_redirects";
 
   oneof cluster_specifier {
     option (validate.required) = true;
@@ -988,10 +984,6 @@ message RouteAction {
 
   // Optionally specifies the :ref:`routing priority <arch_overview_http_routing_priority>`.
   core.v4alpha.RoutingPriority priority = 11 [(validate.rules).enum = {defined_only: true}];
-
-  // Specifies a set of rate limit configurations that could be applied to the
-  // route.
-  repeated RateLimit rate_limits = 13;
 
   // Specifies a list of hash policies to use for ring hash load balancing. Each
   // hash policy is evaluated individually and the combined result is used to

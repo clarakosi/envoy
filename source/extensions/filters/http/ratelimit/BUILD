@@ -18,6 +18,7 @@ envoy_cc_library(
     hdrs = ["ratelimit.h"],
     deps = [
         ":ratelimit_headers_lib",
+        ":ratelimit_policy_impl",
         "//include/envoy/http:codes_interface",
         "//include/envoy/ratelimit:ratelimit_interface",
         "//source/common/common:assert_lib",
@@ -38,6 +39,19 @@ envoy_cc_library(
     deps = [
         "//source/common/http:header_map_lib",
         "//source/extensions/filters/common/ratelimit:ratelimit_client_interface",
+    ],
+)
+
+envoy_cc_library(
+    name = "ratelimit_policy_impl",
+    srcs = ["ratelimit_policy_impl.cc"],
+    hdrs = ["ratelimit_policy_impl.h"],
+    deps = [
+        "//source/common/config:metadata_lib",
+        "//source/common/http:header_utility_lib",
+        "//source/common/router:router_ratelimit_lib",
+        "@envoy_api//envoy/config/core/v3:pkg_cc_proto",
+        "@envoy_api//envoy/extensions/filters/http/ratelimit/v3:pkg_cc_proto",
     ],
 )
 
